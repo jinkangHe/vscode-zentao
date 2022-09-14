@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-
+    "onView:zentao_activitybar_work"
   ],
   "main": "./dist/extension.js",
   "contributes": {

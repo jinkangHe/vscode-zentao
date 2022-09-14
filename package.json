@@ -10,16 +10,31 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-zentao.helloWorld"
+
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "vscode-zentao.helloWorld",
-        "title": "Hello World"
-      }
-    ]
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "zentao_activitybar",
+          "title": "程序猿",
+          "icon": "./resource/icons/activitybar.svg"
+        }
+      ]
+    },
+    "views": {
+      "zentao_activitybar":[
+        {
+          "id": "zentao_activitybar_work",
+          "name": "剩余工作总计"
+        },
+        {
+          "id": "zentao_activitybar_author",
+          "name": "作者"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

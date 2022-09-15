@@ -88,6 +88,21 @@ export function activate(context: vscode.ExtensionContext) {
       zenTaoTreeViewProvider.refresh()
     )
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("zentao_author_like", () => {
+      vscode.window
+        .showQuickPick(["点赞", "下次一定"], {
+          placeHolder: "请选择操作方式",
+        })
+        .then((res) => {
+          res &&
+            vscode.env.openExternal(
+              vscode.Uri.parse(`https://juejin.cn/user/3940246036945575`)
+            );
+        });
+    })
+  );
 }
 
 export function deactivate() {}

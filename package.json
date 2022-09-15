@@ -13,8 +13,8 @@
     "onView:zentao_activitybar_work",
     "onCommand:zentao_task_detail",
     "onCommand:zentao_bug_detail",
-    "onCommand:zentao_activitybar_work_refresh"
-
+    "onCommand:zentao_activitybar_work_refresh",
+    "onCommand:zentao_author_like"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -52,6 +52,10 @@
         "title": "刷新",
         "command": "zentao_activitybar_work_refresh",
         "icon":"./resource/icons/refresh.svg"
+      },
+      {
+        "title": "点赞",
+        "command": "zentao_author_like"
       }
     ],
     "menus": {
@@ -62,7 +66,13 @@
           "group": "navigation"
         }
       ]
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view":"zentao_activitybar_author",
+        "contents": "[😊拖鞋](command:zentao_author_like)\n一款禅道小工具"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

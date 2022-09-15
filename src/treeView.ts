@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
-import { getWorkTotal } from "./request";
+import { getWorkTotal, getProjectList, getTaskList } from "./request";
+import type { ProjectTotal } from "./request";
+import {iconSvg} from './utils';
 
 class ZenTaoTreeViewItem extends vscode.TreeItem {}
 
@@ -11,6 +13,7 @@ export class ZenTaoTreeView
         void | ZenTaoTreeViewItem | ZenTaoTreeViewItem[] | null | undefined
       >
     | undefined;
+  private _projectList: Array<ProjectTotal> = []; //用来过滤不同项目的任务
 
   getTreeItem(
     element: ZenTaoTreeViewItem
@@ -21,6 +24,36 @@ export class ZenTaoTreeView
     element?: ZenTaoTreeViewItem | undefined
   ): vscode.ProviderResult<ZenTaoTreeViewItem[]> {
     if (element) {
+      const { contextValue } = element;
+      if (contextValue === "task") {
+        return new Promise((resolve) => {
+          getProjectList().then((projects) => {
+            this._projectList=projects;
+            resolve(
+              projects.map(({ name, number }) => {
+                const projectItem = new ZenTaoTreeViewItem(
+                  `${name}(${number})`,
+                  vscode.TreeItemCollapsibleState.Collapsed
+                );
+                projectItem.contextValue = name;
+                return projectItem;
+              })
+            );
+          });
+        });
+      } else if (contextValue === "bug") {
+      } else if (this._projectList.some((item) => item.name === contextValue)) {
+        return new Promise((resolve) => {
+          getTaskList().then((tasks) => {            
+            resolve(tasks.filter(item=>item.project===contextValue).map(task=>{
+              const node=new ZenTaoTreeViewItem(`${task.id}-${task.title}`);
+              node.tooltip=`紧急程度：${task.level} 创建人：${task.create}`;
+              node.iconPath=iconSvg(task.icon);
+              return node;
+            }));
+          });
+        });
+      }
     } else {
       return new Promise((resolve) => {
         getWorkTotal().then((res) => {
@@ -29,10 +62,12 @@ export class ZenTaoTreeView
             `我的任务-${task}`,
             vscode.TreeItemCollapsibleState.Collapsed
           );
+          taskItem.contextValue = "task";
           const bugItem = new ZenTaoTreeViewItem(
             `我的bug-${bug}`,
             vscode.TreeItemCollapsibleState.Collapsed
           );
+          bugItem.contextValue = "bug";
           resolve([taskItem, bugItem]);
         });
       });

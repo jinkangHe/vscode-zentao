@@ -57,6 +57,10 @@ export class ZenTaoTreeView
                 );
                 node.tooltip = `类型：${bug.type} 所属产品：${bug.product} 创建人：${bug.create}`;
                 node.iconPath = iconSvg(bug.icon);
+                node.command = {
+                  title: "bug详情",
+                  command: "zentao_bug_detail",
+                };
                 return node;
               })
             );
@@ -74,6 +78,11 @@ export class ZenTaoTreeView
                   );
                   node.tooltip = `紧急程度：${task.level} 创建人：${task.create}`;
                   node.iconPath = iconSvg(task.icon);
+                  node.command = {
+                    title: "任务详情",
+                    command: "zentao_task_detail",
+                    arguments:[task,node]
+                  };
                   return node;
                 })
             );

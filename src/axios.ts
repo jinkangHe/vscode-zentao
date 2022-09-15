@@ -1,7 +1,9 @@
 import axios, { AxiosRequestConfig } from "axios";
 
+export const baseURL="http://192.168.1.238";
+
 const server = axios.create({
-  baseURL: "http://192.168.1.238",
+  baseURL ,
   timeout: 6000,
 });
 

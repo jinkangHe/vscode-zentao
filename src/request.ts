@@ -1,4 +1,4 @@
-import { request } from "./axios";
+import { request, baseURL } from "./axios";
 import * as cheerio from "cheerio";
 
 interface WorkTotal {
@@ -142,6 +142,62 @@ const bugList = (path: string): Promise<BugType[]> => {
           : optimizationL.push(bug);
       });
       resolve([...seriousL, ...generallyL, ...optimizationL]);
+    });
+  });
+};
+
+interface TaskDetail {
+  taskDescribe: string;
+  requirementDescribe: string;
+  acceptanceCriteria: string;
+  modifyDescription: string;
+}
+
+export const getBugDetail = (path: string): Promise<string> => {
+  return new Promise((resolve) => {
+    request({
+      url: path,
+      method: "get",
+    }).then((res) => {
+      const $ = cheerio.load(res.data as string);
+      const imgs = $(
+        "#mainContent .main-col.col-8 .cell > .detail .detail-content.article-content img"
+      );
+      Array.from(imgs).forEach((item: any) => {
+        const src = item.attribs.src;
+        $(item).attr("src", `${baseURL}${src}`);
+      });
+      const detail = $(
+        "#mainContent .main-col.col-8 .cell > .detail .detail-content.article-content"
+      );
+      resolve(detail.html()!);
+    });
+  });
+};
+
+export const getTaskDetail = (path: string): Promise<TaskDetail> => {
+  return new Promise((resolve) => {
+    request({
+      url: path,
+      method: "get",
+    }).then((res) => {
+      const $ = cheerio.load(res.data as string);
+      const imgs = $(
+        "#mainContent .main-col.col-8 .cell > .detail .detail-content.article-content img"
+      );
+      Array.from(imgs).forEach((item: any) => {
+        const src = item.attribs.src;
+        $(item).attr("src", `${baseURL}${src}`);
+      });
+      const taskDetail = $(
+        "#mainContent .main-col.col-8 .cell > .detail .detail-content.article-content"
+      );
+      resolve({
+        taskDescribe: $(taskDetail[0]).html()!,
+        requirementDescribe: $(taskDetail[1]).html()!,
+        acceptanceCriteria: $(taskDetail[2]).html()!,
+        modifyDescription: $(taskDetail[3]).html()!,
+      });
     });
   });
 };

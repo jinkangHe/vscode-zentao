@@ -10,7 +10,9 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:zentao_activitybar_work"
+    "onView:zentao_activitybar_work",
+    "onCommand:zentao_task_detail",
+    "onCommand:zentao_bug_detail"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -34,7 +36,17 @@
           "name": "作者"
         }
       ]
-    }
+    },
+    "commands":[
+      {
+        "title": "任务详情",
+        "command": "zentao_task_detail"
+      },
+      {
+        "title": "bug详情",
+        "command": "zentao_bug_detail"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

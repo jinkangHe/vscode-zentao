@@ -12,7 +12,9 @@
   "activationEvents": [
     "onView:zentao_activitybar_work",
     "onCommand:zentao_task_detail",
-    "onCommand:zentao_bug_detail"
+    "onCommand:zentao_bug_detail",
+    "onCommand:zentao_activitybar_work_refresh"
+
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -45,8 +47,22 @@
       {
         "title": "bug详情",
         "command": "zentao_bug_detail"
+      },
+      {
+        "title": "刷新",
+        "command": "zentao_activitybar_work_refresh",
+        "icon":"./resource/icons/refresh.svg"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "zentao_activitybar_work_refresh",
+          "when": "view==zentao_activitybar_work",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

@@ -82,6 +82,12 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("zentao_activitybar_work_refresh", () =>
+      zenTaoTreeViewProvider.refresh()
+    )
+  );
 }
 
 export function deactivate() {}

@@ -13,12 +13,17 @@ class ZenTaoTreeViewItem extends vscode.TreeItem {}
 export class ZenTaoTreeView
   implements vscode.TreeDataProvider<ZenTaoTreeViewItem>
 {
+  private _projectList: Array<ProjectTotal> = []; //用来过滤不同项目的任务
+
+  private _onDidChangeTreeData: vscode.EventEmitter<
+    ZenTaoTreeViewItem | undefined | null | void
+  > = new vscode.EventEmitter<ZenTaoTreeViewItem | undefined | null | void>();
+
   onDidChangeTreeData?:
     | vscode.Event<
         void | ZenTaoTreeViewItem | ZenTaoTreeViewItem[] | null | undefined
       >
-    | undefined;
-  private _projectList: Array<ProjectTotal> = []; //用来过滤不同项目的任务
+    | undefined = this._onDidChangeTreeData.event;
 
   getTreeItem(
     element: ZenTaoTreeViewItem
@@ -81,7 +86,7 @@ export class ZenTaoTreeView
                   node.command = {
                     title: "任务详情",
                     command: "zentao_task_detail",
-                    arguments:[task,node]
+                    arguments: [task, node],
                   };
                   return node;
                 })
@@ -113,5 +118,10 @@ export class ZenTaoTreeView
     element: ZenTaoTreeViewItem
   ): vscode.ProviderResult<ZenTaoTreeViewItem> {
     return element;
+  }
+
+  //刷新
+  refresh(): void {
+    this._onDidChangeTreeData.fire();
   }
 }

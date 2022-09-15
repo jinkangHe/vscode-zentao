@@ -1,17 +1,18 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { getConfiguration, BASEURL, SID,getCooKie } from "./config";
 
-export const baseURL="http://192.168.1.238";
+export const baseURL = getConfiguration(BASEURL) as string;
 
-const server = axios.create({
-  baseURL ,
+ const server = axios.create({
+  baseURL,
   timeout: 6000,
 });
 
 server.interceptors.request.use(
   function (config) {
-    config.headers![
-      "cookie"
-    ] = `zentaosid=sj4q2b27sti0jftdhdd6p9qnrd; lang=zh-cn; device=desktop; theme=default`;
+    const ck=getCooKie();
+    // console.log(ck);
+    config.headers!["cookie"] = ck;
     return config;
   },
   function (error) {
@@ -27,6 +28,8 @@ server.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+ 
 
 interface MyResponseType {
   code: number;

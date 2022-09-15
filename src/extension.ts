@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   let bugPanelList: Array<vscode.WebviewPanel> = [];
   context.subscriptions.push(
-    vscode.commands.registerCommand("zentao_bug_detail", (bug, bugTreeItem) => {
+    vscode.commands.registerCommand("zentao_bug_detail", (bug, bugTreeItem) => {      
       if (!bug && !bugTreeItem) {
         return;
       }
@@ -103,6 +103,10 @@ export function activate(context: vscode.ExtensionContext) {
         });
     })
   );
+
+  context.subscriptions.push(vscode.commands.registerCommand('zentao_setting',()=>{
+    vscode.commands.executeCommand("workbench.action.openSettings", "zenTao");
+  }));
 }
 
 export function deactivate() {}

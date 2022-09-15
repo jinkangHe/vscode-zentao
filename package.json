@@ -14,7 +14,8 @@
     "onCommand:zentao_task_detail",
     "onCommand:zentao_bug_detail",
     "onCommand:zentao_activitybar_work_refresh",
-    "onCommand:zentao_author_like"
+    "onCommand:zentao_author_like",
+    "onCommand:zentao_setting"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -56,6 +57,10 @@
       {
         "title": "点赞",
         "command": "zentao_author_like"
+      },
+      {
+        "title": "设置",
+        "command": "zentao_setting"
       }
     ],
     "menus": {
@@ -69,8 +74,31 @@
     },
     "viewsWelcome": [
       {
+        "view":"zentao_activitybar_work",
+        "contents": "欢迎使用，为了更好的使用该插件请先设置用户信息\n[去设置](command:zentao_setting)"
+      },
+      {
         "view":"zentao_activitybar_author",
         "contents": "[😊拖鞋](command:zentao_author_like)\n一款禅道小工具"
+      }
+    ],
+    "configuration":[
+      {
+        "title": "zenTao",
+        "properties": {
+          "zentao.sid":{
+            "type":"string",
+            "description": "禅道cookie对象的zentaosid字段值(必填)"
+          },
+          "zentao.baseurl":{
+            "type":"string",
+            "description": "禅道IP地址，例如http//:0.0.0.0:6666(必填)"
+          },
+          "zentao.userinfo":{
+            "type":"object",
+            "description": "用户账号密码(非必填,如果填写的话在用户登陆过期的时候会自动获取凭证){account:xxx,password:xxx}"
+          }
+        }
       }
     ]
   },

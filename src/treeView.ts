@@ -7,6 +7,7 @@ import {
 } from "./request";
 import type { ProjectTotal } from "./request";
 import { iconSvg } from "./utils";
+import { getConfiguration, BASEURL, SID } from "./config";
 
 class ZenTaoTreeViewItem extends vscode.TreeItem {}
 
@@ -65,6 +66,7 @@ export class ZenTaoTreeView
                 node.command = {
                   title: "bug详情",
                   command: "zentao_bug_detail",
+                  arguments:[bug,node]
                 };
                 return node;
               })
@@ -95,9 +97,15 @@ export class ZenTaoTreeView
         });
       }
     } else {
+      if (!(getConfiguration(BASEURL) && getConfiguration(SID))) {
+        return [];
+      }
       return new Promise((resolve) => {
         getWorkTotal().then((res) => {
-          const { task, bug } = res;
+          const { task, bug, expired } = res;
+          if (expired) {
+            resolve([]);
+          }
           const taskItem = new ZenTaoTreeViewItem(
             `我的任务-${task}`,
             vscode.TreeItemCollapsibleState.Collapsed

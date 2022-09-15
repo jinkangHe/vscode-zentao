@@ -1,7 +1,12 @@
 import * as vscode from "vscode";
-import { getWorkTotal, getProjectList, getTaskList } from "./request";
+import {
+  getWorkTotal,
+  getProjectList,
+  getTaskList,
+  getBugList,
+} from "./request";
 import type { ProjectTotal } from "./request";
-import {iconSvg} from './utils';
+import { iconSvg } from "./utils";
 
 class ZenTaoTreeViewItem extends vscode.TreeItem {}
 
@@ -28,7 +33,7 @@ export class ZenTaoTreeView
       if (contextValue === "task") {
         return new Promise((resolve) => {
           getProjectList().then((projects) => {
-            this._projectList=projects;
+            this._projectList = projects;
             resolve(
               projects.map(({ name, number }) => {
                 const projectItem = new ZenTaoTreeViewItem(
@@ -42,15 +47,36 @@ export class ZenTaoTreeView
           });
         });
       } else if (contextValue === "bug") {
+        return new Promise((resolve) => {
+          getBugList().then((bugs) => {
+            resolve(
+              bugs.map((bug) => {
+                const node = new ZenTaoTreeViewItem(
+                  `${bug.id}-${bug.title}`,
+                  vscode.TreeItemCollapsibleState.None
+                );
+                node.tooltip = `类型：${bug.type} 所属产品：${bug.product} 创建人：${bug.create}`;
+                node.iconPath = iconSvg(bug.icon);
+                return node;
+              })
+            );
+          });
+        });
       } else if (this._projectList.some((item) => item.name === contextValue)) {
         return new Promise((resolve) => {
-          getTaskList().then((tasks) => {            
-            resolve(tasks.filter(item=>item.project===contextValue).map(task=>{
-              const node=new ZenTaoTreeViewItem(`${task.id}-${task.title}`);
-              node.tooltip=`紧急程度：${task.level} 创建人：${task.create}`;
-              node.iconPath=iconSvg(task.icon);
-              return node;
-            }));
+          getTaskList().then((tasks) => {
+            resolve(
+              tasks
+                .filter((item) => item.project === contextValue)
+                .map((task) => {
+                  const node = new ZenTaoTreeViewItem(
+                    `${task.id}-${task.title}`
+                  );
+                  node.tooltip = `紧急程度：${task.level} 创建人：${task.create}`;
+                  node.iconPath = iconSvg(task.icon);
+                  return node;
+                })
+            );
           });
         });
       }

@@ -56,7 +56,7 @@ interface TaskType {
   project: string;
   level: string;
   create: string;
-  icon:string;
+  icon: string;
 }
 
 const taskList = (path: string): Promise<TaskType[]> => {
@@ -78,8 +78,8 @@ const taskList = (path: string): Promise<TaskType[]> => {
         };
         const task: TaskType = {
           id: $(id).text().trim(),
-          level:$(level).text().trim(),
-          icon:levelToSvgTask[$(level).text().trim()] ,
+          level: $(level).text().trim(),
+          icon: levelToSvgTask[$(level).text().trim()],
           title: $(name).children("a").text().trim(),
           project: $(project).text().trim(),
           create: $(create).text().trim(),
@@ -94,6 +94,59 @@ const taskList = (path: string): Promise<TaskType[]> => {
     });
   });
 };
+
+interface BugType {
+  id: string;
+  level: string;
+  title: string;
+  product: string;
+  type: string;
+  create: string;
+  icon: string;
+}
+
+const bugList = (path: string): Promise<BugType[]> => {
+  return new Promise((resolve) => {
+    request({
+      url: path,
+      method: "get",
+    }).then((res) => {
+      const $ = cheerio.load(res.data as string);
+      const bugList = Array.from($("#bugList tbody > tr "));
+      const seriousL: BugType[] = [],
+        generallyL: BugType[] = [],
+        optimizationL: BugType[] = [];
+      bugList.forEach((item) => {
+        const [id, level, _, __, title, product, type, create] = Array.from(
+          $(item).children("td")
+        );
+        const levelToSvgBug: { [key: string]: string } = {
+          严重: "bug_serious",
+          一般: "bug_generally",
+          优化: "bug_optimization",
+        };
+        const bug: BugType = {
+          id: $(id).text().trim(),
+          level: $(level).text().trim(),
+          title: $(title).text().trim(),
+          product: $(product).text().trim(),
+          type: $(type).text().trim(),
+          create: $(create).text().trim(),
+          icon: levelToSvgBug[$(level).text().trim()],
+        };
+        const { level: L } = bug;
+        L === "严重"
+          ? seriousL.push(bug)
+          : L === "一般"
+          ? generallyL.push(bug)
+          : optimizationL.push(bug);
+      });
+      resolve([...seriousL, ...generallyL, ...optimizationL]);
+    });
+  });
+};
+
+export const getBugList = () => bugList("/my-work-bug.html");
 
 export const getTaskList = () => taskList("/my-work-task.html");
 
